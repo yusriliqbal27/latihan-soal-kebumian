@@ -108,6 +108,18 @@
             return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
 
+        // Menyimpan jawaban soal saat ini
+        function saveCurrentAnswer() {
+            if (currentQuestionIndex >= totalQuestions) return;
+            const q = questions[currentQuestionIndex];
+            if (q.type === 'multiple_choice' || q.type === 'true_false') {
+                const selected = document.querySelector('input[name="option"]:checked');
+                userAnswers[currentQuestionIndex] = selected ? parseInt(selected.value) : null;
+            } else if (q.type === 'short_answer') {
+                userAnswers[currentQuestionIndex] = document.getElementById('shortAnswer').value.trim();
+            }
+        }
+
         // Menampilkan soal saat ini
         function showQuestion() {
             const quizContainer = document.getElementById('quiz-container');
@@ -159,8 +171,6 @@
             const navHtml = `<select class="form-select nav-select" id="question-nav">${navOptions.join('')}</select>`;
 
             const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
-            const buttonText = isLastQuestion ? 'Submit' : 'Selanjutnya';
-            const buttonId = isLastQuestion ? 'submit-btn' : 'next-btn';
 
             quizContainer.innerHTML = `
                 <div class="card mb-4">
@@ -177,17 +187,23 @@
                                 ${navHtml}
                             </div>
                             <div>
-                                <button class="btn btn-primary" id="${buttonId}">
-                                    ${buttonText}
-                                </button>
+                                ${isLastQuestion ? `
+                                    <button class="btn btn-primary" id="submit-btn" onclick="submitAnswers()">
+                                        Submit
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">
+                                        Selanjutnya
+                                    </button>
+                                `}
                             </div>
                         </div>
                     </div>
                 </div>
             `;
 
-            // Enable/disable next/submit button based on selection
-            const button = document.getElementById(buttonId);
+            // Enable/disable button based on selection
+            const button = document.getElementById(isLastQuestion ? 'submit-btn' : 'next-btn');
             if (q.type === 'short_answer') {
                 const input = document.getElementById('shortAnswer');
                 input.addEventListener('input', () => {
@@ -200,7 +216,8 @@
                 const radios = document.querySelectorAll('input[name="option"]');
                 radios.forEach(radio => {
                     radio.addEventListener('change', () => {
-                        button.disabled = !document.querySelector('input[name="option"]:checked');
+                        const anyChecked = document.querySelector('input[name="option"]:checked');
+                        button.disabled = !anyChecked;
                     });
                 });
                 // Initial state
@@ -213,12 +230,7 @@
                 const targetIndex = parseInt(e.target.value);
                 if (targetIndex !== currentQuestionIndex) {
                     // Save current answer before jumping
-                    if (q.type === 'multiple_choice' || q.type === 'true_false') {
-                        const selected = document.querySelector('input[name="option"]:checked');
-                        userAnswers[currentQuestionIndex] = selected ? parseInt(selected.value) : null;
-                    } else if (q.type === 'short_answer') {
-                        userAnswers[currentQuestionIndex] = document.getElementById('shortAnswer').value.trim();
-                    }
+                    saveCurrentAnswer();
                     currentQuestionIndex = targetIndex;
                     showQuestion();
                 }
@@ -234,8 +246,21 @@
             }
         }
 
+        // Fungsi untuk pindah ke soal berikutnya
+        function nextQuestion() {
+            saveCurrentAnswer();
+            currentQuestionIndex++;
+            if (currentQuestionIndex < totalQuestions) {
+                showQuestion();
+            } else {
+                // Should not happen because we disable next button on last question
+                submitAnswers();
+            }
+        }
+
         // Mengirimkan semua jawaban dan menampilkan hasil (tanpa mengungkapkan jawaban benar)
         function submitAnswers() {
+            saveCurrentAnswer();
             // Stop timer
             clearInterval(timerInterval);
             const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
