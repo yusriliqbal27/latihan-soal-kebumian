@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Latihan Kebumian</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding-top: 4rem; }
+        .question-card { border: 1px solid #ddd; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; }
+        .question-img-preview { max-width: 200px; margin-top: 1rem; display: none; }
+        .btn-add-option { margin-top: 0.5rem; }
+        .option-row { margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .option-input { flex: 1; }
+        .remove-option-btn { width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="mb-4">
+            <h1>Buat Latihan Kebumian</h1>
+            <p class="text-muted">Buat soal latihan untuk murid. Setelah selesai, unduh file questions.json dan ganti yang ada di repositori.</p>
+        </header>
+
+        <nav>
+            <div class="nav nav-tabs" id="questionTypeTab" role="tablist">
+                <button class="nav-link active" id="mc-tab" data-bs-toggle="tab" data-bs-target="#mc" type="button" role="tab">Pilihan Ganda</button>
+                <button class="nav-link" id="tf-tab" data-bs-toggle="tab" data-bs-target="#tf" type="button" role="tab">Benar/Salah</button>
+                <button class="nav-link" id="sa-tab" data-bs-toggle="tab" data-bs-target="#sa" type="button" role="tab">Isian Singkat</button>
+            </div>
+        </nav>
+        <div class="tab-content" id="questionTypeTabContent">
+            <div class="tab-pane fade show active" id="mc" role="tabpanel" aria-labelledby="mc-tab">
+                <!-- Multiple Choice Form -->
+                <div id="mc-form">
+                    <div class="mb-3">
+                        <label for="mc-prompt" class="form-label">Prompt Soal</label>
+                        <textarea class="form-control" id="mc-prompt" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mc-image" class="form-label">Gambar (opsional)</label>
+                        <input class="form-control" type="file" id="mc-image" accept="image/*">
+                        <img class="question-img-preview" id="mc-image-preview" src="" alt="Preview gambar">
+                    </div>
+                    <div class="mb-3" id="mc-options-container">
+                        <label for="mc-options" class="form-label">Opsi Jawaban (minimal 2)</label>
+                        <div id="mc-options-list">
+                            <!-- Option rows will be added here -->
+                        </div>
+                        <button class="btn btn-outline-primary btn-add-option" type="button" onclick="addMcOption()">+ Tambah Opsi</button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mc-answer" class="form-label">Jawaban Benar</label>
+                        <select class="form-select" id="mc-answer" required></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mc-explanation" class="form-label">Penjelasan (opsional)</label>
+                        <textarea class="form-control" id="mc-explanation" rows="2"></textarea>
+                    </div>
+                    <button class="btn btn-success" type="button" onclick="addMcQuestion()">Tambah Soal Pilihan Ganda</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tf" role="tabpanel" aria-labelledby="tf-tab">
+                <!-- True/False Form -->
+                <div id="tf-form">
+                    <div class="mb-3">
+                        <label for="tf-prompt" class="form-label">Prompt Soal</label>
+                        <textarea class="form-control" id="tf-prompt" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tf-image" class="form-label">Gambar (opsional)</label>
+                        <input class="form-control" type="file" id="tf-image" accept="image/*">
+                        <img class="question-img-preview" id="tf-image-preview" src="" alt="Preview gambar">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tf-answer" class="form-label">Jawaban Benar</label>
+                        <select class="form-select" id="tf-answer" required>
+                            <option value="true">Benar</option>
+                            <option value="false">Salah</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tf-explanation" class="form-label">Penjelasan (opsional)</label>
+                        <textarea class="form-control" id="tf-explanation" rows="2"></textarea>
+                    </div>
+                    <button class="btn btn-success" type="button" onclick="addTfQuestion()">Tambah Soal Benar/Salah</button>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="sa" role="tabpanel" aria-labelledby="sa-tab">
+                <!-- Short Answer Form -->
+                <div id="sa-form">
+                    <div class="mb-3">
+                        <label for="sa-prompt" class="form-label">Prompt Soal</label>
+                        <textarea class="form-control" id="sa-prompt" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sa-image" class="form-label">Gambar (opsional)</label>
+                        <input class="form-control" type="file" id="sa-image" accept="image/*">
+                        <img class="question-img-preview" id="sa-image-preview" src="" alt="Preview gambar">
+                    </div>
+                    <div class="mb-3">
+                        <label for="sa-answer" class="form-label">Jawaban Benar</label>
+                        <input class="form-control" type="text" id="sa-answer" placeholder="Jawaban singkat" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sa-explanation" class="form-label">Penjelasan (opsional)</label>
+                        <textarea class="form-control" id="sa-explanation" rows="2"></textarea>
+                    </div>
+                    <button class="btn btn-success" type="button" onclick="addSaQuestion()">Tambah Soal Isian Singkat</button>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <h2>Daftar Soal yang Baru Dibuat</h2>
+        <div id="questions-list" class="list-group mb-4">
+            <!-- Soal akan ditampilkan di sini -->
+        </div>
+
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="button" onclick="downloadJson()">Unduh questions.json</button>
+            <button class="btn btn-outline-secondary" type="button" onclick="clearAll()">Hapus Semua Soal</button>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+
+        // Fungsi untuk menambahkan opsi pilihan ganda
+        function addMcOption() {
+            const optionsList = document.getElementById('mc-options-list');
+            const optionIndex = optionsList.children.length;
+            const optionRow = document.createElement('div');
+            optionRow.className = 'option-row input-group';
+            optionRow.innerHTML = `
+                <input type="text" class="form-control option-input" placeholder="Opsi ${String.fromCharCode(65 + optionIndex)}" required>
+                <button class="btn btn-outline-danger remove-option-btn" type="button" onclick="removeMcOption(this)">×</button>
+            `;
+            optionsList.appendChild(optionRow);
+            updateMcAnswerSelect();
+        }
+
+        function removeMcOption(button) {
+            const optionRow = button.parentElement;
+            optionRow.remove();
+            // Renumber remaining options
+            const optionsList = document.getElementById('mc-options-list');
+            Array.from(optionsList.children).forEach((row, idx) => {
+                const input = row.querySelector('.option-input');
+                input.placeholder = `Opsi ${String.fromCharCode(65 + idx)}`;
+            });
+            updateMcAnswerSelect();
+        }
+
+        function updateMcAnswerSelect() {
+            const answerSelect = document.getElementById('mc-answer');
+            const optionsList = document.getElementById('mc-options-list');
+            answerSelect.innerHTML = '';
+            Array.from(optionsList.children).forEach((row, idx) => {
+                const optionLetter = String.fromCharCode(65 + idx);
+                const optionText = row.querySelector('.option-input').value.trim() || `Opsi ${optionLetter}`;
+                const option = document.createElement('option');
+                option.value = idx;
+                option.textContent = `${optionLetter}. ${optionText}`;
+                answerSelect.appendChild(option);
+            });
+        }
+
+        // Preview gambar
+        function setupImagePreview(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            input.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = '';
+                    preview.style.display = 'none';
+                }
+            });
+        }
+
+        // Setup previews for each question type
+        setupImagePreview('mc-image', 'mc-image-preview');
+        setupImagePreview('tf-image', 'tf-image-preview');
+        setupImagePreview('sa-image', 'sa-image-preview');
+
+        // Tambah soal pilihan ganda
+        function addMcQuestion() {
+            const prompt = document.getElementById('mc-prompt').value.trim();
+            if (!prompt) {
+                alert('Prompt soal tidak boleh kosong!');
+                return;
+            }
+            const optionsList = document.getElementById('mc-options-list');
+            const options = [];
+            let valid = true;
+            Array.from(optionsList.children).forEach(row => {
+                const input = row.querySelector('.option-input');
+                const value = input.value.trim();
+                if (!value) {
+                    valid = false;
+                }
+                options.push(value);
+            });
+            if (!valid || options.length < 2) {
+                alert('Isi semua opsi dengan minimal 2 opsi!');
+                return;
+            }
+            const answerIndex = parseInt(document.getElementById('mc-answer').value);
+            const imageInput = document.getElementById('mc-image');
+            const imageFile = imageInput.files[0];
+            let imageName = null;
+            if (imageFile) {
+                // For simplicity, we'll use a placeholder name; in real scenario, you'd upload to a server.
+                // Here we'll just store the file name and assume the user will place the image in assets folder.
+                imageName = imageFile.name;
+                // We could also convert to base64 and embed, but that makes JSON large.
+                // We'll just store the filename and instruct user to place image in assets/
+            }
+            const explanation = document.getElementById('mc-explanation').value.trim();
+
+            const question = {
+                type: 'multiple_choice',
+                prompt: prompt,
+                options: options,
+                answerIndex: answerIndex,
+                explanation: explanation,
+                image: imageName // will be null if no image
+            };
+
+            questions.push(question);
+            renderQuestionsList();
+            resetMcForm();
+        }
+
+        function resetMcForm() {
+            document.getElementById('mc-prompt').value = '';
+            const optionsList = document.getElementById('mc-options-list');
+            optionsList.innerHTML = '';
+            addMcOption(); // add first option
+            addMcOption(); // add second option
+            document.getElementById('mc-answer').selectedIndex = 0;
+            document.getElementById('mc-explanation').value = '';
+            document.getElementById('mc-image').value = '';
+            document.getElementById('mc-image-preview').src = '';
+            document.getElementById('mc-image-preview').style.display = 'none';
+        }
+
+        // Tambah soal benar/salah
+        function addTfQuestion() {
+            const prompt = document.getElementById('tf-prompt').value.trim();
+            if (!prompt) {
+                alert('Prompt soal tidak boleh kosong!');
+                return;
+            }
+            const answer = document.getElementById('tf-answer').value === 'true';
+            const imageInput = document.getElementById('tf-image');
+            const imageFile = imageInput.files[0];
+            let imageName = null;
+            if (imageFile) {
+                imageName = imageFile.name;
+            }
+            const explanation = document.getElementById('tf-explanation').value.trim();
+
+            const question = {
+                type: 'true_false',
+                prompt: prompt,
+                answer: answer,
+                explanation: explanation,
+                image: imageName
+            };
+
+            questions.push(question);
+            renderQuestionsList();
+            resetTfForm();
+        }
+
+        function resetTfForm() {
+            document.getElementById('tf-prompt').value = '';
+            document.getElementById('tf-answer').selectedIndex = 0;
+            document.getElementById('tf-explanation').value = '';
+            document.getElementById('tf-image').value = '';
+            document.getElementById('tf-image-preview').src = '';
+            document.getElementById('tf-image-preview').style.display = 'none';
+        }
+
+        // Tambah soal isian singkat
+        function addSaQuestion() {
+            const prompt = document.getElementById('sa-prompt').value.trim();
+            if (!prompt) {
+                alert('Prompt soal tidak boleh kosong!');
+                return;
+            }
+            const answer = document.getElementById('sa-answer').value.trim();
+            if (!answer) {
+                alert('Jawaban tidak boleh kosong!');
+                return;
+            }
+            const imageInput = document.getElementById('sa-image');
+            const imageFile = imageInput.files[0];
+            let imageName = null;
+            if (imageFile) {
+                imageName = imageFile.name;
+            }
+            const explanation = document.getElementById('sa-explanation').value.trim();
+
+            const question = {
+                type: 'short_answer',
+                prompt: prompt,
+                answer: answer,
+                explanation: explanation,
+                image: imageName
+            };
+
+            questions.push(question);
+            renderQuestionsList();
+            resetSaForm();
+        }
+
+        function resetSaForm() {
+            document.getElementById('sa-prompt').value = '';
+            document.getElementById('sa-answer').value = '';
+            document.getElementById('sa-explanation').value = '';
+            document.getElementById('sa-image').value = '';
+            document.getElementById('sa-image-preview').src = '';
+            document.getElementById('sa-image-preview').style.display = 'none';
+        }
+
+        // Render daftar soal
+        function renderQuestionsList() {
+            const container = document.getElementById('questions-list');
+            container.innerHTML = '';
+            questions.forEach((q, idx) => {
+                const item = document.createElement('div');
+                item.className = 'list-item list-group-item';
+                let imageHtml = '';
+                if (q.image) {
+                    imageHtml = `<img src="assets/${q.image}" class="question-img-preview" alt="Gambar soal" style="max-width:100px;">`;
+                }
+                let content = `
+                    <h6>Soal ${idx + 1} (${q.type})</h6>
+                    <p><strong>Prompt:</strong> ${q.prompt}</p>
+                    ${imageHtml}
+                `;
+                if (q.type === 'multiple_choice') {
+                    content += `<p><strong>Opsi:</strong> ${q.options.map((opt, i) => `${String.fromCharCode(65+i)}. ${opt}`).join('<br>')}</p>`;
+                    content += `<p><strong>Jawaban Benar:</strong> ${String.fromCharCode(65 + q.answerIndex)}</p>`;
+                } else if (q.type === 'true_false') {
+                    content += `<p><strong>Jawaban Benar:</strong> ${q.answer ? 'Benar' : 'Salah'}</p>`;
+                } else if (q.type === 'short_answer') {
+                    content += `<p><strong>Jawaban Benar:</strong> ${q.answer}</p>`;
+                }
+                if (q.explanation) {
+                    content += `<p><strong>Penjelasan:</strong> ${q.explanation}</p>`;
+                }
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'btn btn-sm btn-danger float-end';
+                removeBtn.textContent = 'Hapus';
+                removeBtn.onclick = () => {
+                    questions.splice(idx, 1);
+                    renderQuestionsList();
+                };
+                item.innerHTML = content;
+                item.appendChild(removeBtn);
+                container.appendChild(item);
+            });
+        }
+
+        // Unduh questions.json
+        function downloadJson() {
+            if (questions.length === 0) {
+                alert('Belum ada soal yang dibuat!');
+                return;
+            }
+            const dataStr = JSON.stringify(questions, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = 'questions.json';
+            downloadLink.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Hapus semua soal
+        function clearAll() {
+            if (confirm('Apakah Anda yakin ingin menghapus semua soal?')) {
+                questions = [];
+                renderQuestionsList();
+            }
+        }
+
+        // Inisialisasi: tambahkan dua opsi default untuk pilihan ganda
+        document.addEventListener('DOMContentLoaded', function() {
+            addMcOption();
+            addMcOption();
+        });
+    </script>
+</body>
+</html>

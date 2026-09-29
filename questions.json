@@ -1,0 +1,27 @@
+[
+  {
+    "type": "multiple_choice",
+    "prompt": "Apa yang merupakan lapisan bumi yang paling dalam?",
+    "options": [
+      "Kulit bumi",
+      "Mantel",
+      "Inti luar",
+      "Inti dalam"
+    ],
+    "answerIndex": 3,
+    "explanation": "Inti dalam adalah lapisan bumi yang paling dalam dan terdiri dari nikel dan besi padat.",
+    "image": "earth_layers.png"
+  },
+  {
+    "type": "true_false",
+    "prompt": "Gunung berapi terbentuk karena gerakan lempeng tektonik yang mengekalkan.",
+    "answer": false,
+    "explanation": "Gunung berapi terbentuk karena lempeng tektonik yang berkonvergen atau divergen, bukan karena mereka mengekalkan."
+  },
+  {
+    "type": "short_answer",
+    "prompt": "Apa istilah untuk proses peleburan batuan karena panas dan tekanan dalam proses metamorphisme?",
+    "answer": "metamorfosis",
+    "explanation": "Metamorfosis adalah proses perubahan batuan existing karena panas, tekanan, dan zat kimia tanpa melelehnya."
+  }
+]
