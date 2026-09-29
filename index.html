@@ -12,13 +12,14 @@
         .correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .incorrect { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .wrong-mark { color: #dc3545; font-weight: bold; } /* red */
-        .score-top { font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; }
+        .score-top { font-size: 1.3rem; font-weight: bold; margin-bottom: 0.5rem; }
         .question-block { border: 1px solid #ddd; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; background-color: #fafafa; }
         .btn-download { margin-top: 1rem; }
         .header-section { background: #f8f9fa; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 2rem; }
         .form-label { font-weight: 600; }
         .timer { font-size: 1.2rem; font-weight: 600; color: #2c3e50; }
         .nav-select { width: 100%; max-width: 200px; display: inline-block; }
+        .hint { font-size: 0.9rem; color: #666; }
     </style>
 </head>
 <body>
@@ -77,7 +78,8 @@
         let totalQuestions = 0;
         let studentName = '';
         let studentClass = '';
-        let startTime = null;
+        let startTime = null; // timestamp when quiz started
+        let endTime = null;   // timestamp when submitted
         let timerInterval = null;
 
         // Fungsi untuk memuat soal dari file JSON
@@ -90,6 +92,7 @@
                 // Reset timer
                 clearInterval(timerInterval);
                 startTime = null;
+                endTime = null;
                 document.getElementById('timer-display').textContent = '00:00:00';
                 showQuestion();
             } catch (error) {
@@ -263,7 +266,8 @@
             saveCurrentAnswer();
             // Stop timer
             clearInterval(timerInterval);
-            const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+            endTime = Date.now();
+            const elapsedSeconds = Math.floor((endTime - startTime) / 1000);
             const elapsedTimeStr = formatTime(elapsedSeconds);
 
             let score = 0;
@@ -326,7 +330,9 @@
                 <div class="score-top">
                     Nama: ${studentName || '-'}<br>
                     Kelas: ${studentClass || '-'}<br>
-                    Waktu pengerjaan: ${elapsedTimeStr}<br>
+                    Waktu mulai: ${new Date(startTime).toLocaleTimeString('id-ID')}<br>
+                    Waktu selesai: ${new Date(endTime).toLocaleTimeString('id-ID')}<br>
+                    Durasi: ${elapsedTimeStr}<br>
                     Nilai Anda: ${score} dari ${totalQuestions} (${scorePercent}%)
                 </div>
             `;
@@ -344,7 +350,7 @@
         // Menghasilkan file HTML hasil untuk diunduh
         function downloadReview() {
             const scorePercent = Math.round((score / totalQuestions) * 100);
-            const elapsedTimeStr = formatTime(Math.floor((Date.now() - startTime) / 1000));
+            const elapsedTimeStr = formatTime(Math.floor((endTime - startTime) / 1000));
             const htmlContent = `
 <!DOCTYPE html>
 <html lang="id">
@@ -370,8 +376,10 @@
         <div class="info">
             Nama: ${studentName || '-'}<br>
             Kelas: ${studentClass || '-'}<br>
-            Waktu pengerjaan: ${elapsedTimeStr}<br>
-            Tanggal: ${new Date().toLocaleDateString('id-ID')} ${new Date().toLocaleTimeString('id-ID')}
+            Waktu mulai: ${new Date(startTime).toLocaleTimeString('id-ID')}<br>
+            Waktu selesai: ${new Date(endTime).toLocaleTimeString('id-ID')}<br>
+            Durasi: ${elapsedTimeStr}<br>
+            Tanggal: ${new Date().toLocaleDateString('id-ID')}
         </div>
         <div class="score">Nilai: ${score} dari ${totalQuestions} (${scorePercent}%)</div>
     </div>
@@ -451,8 +459,9 @@
             userAnswers = [];
             studentName = '';
             studentClass = '';
-            clearInterval(timerInterval);
             startTime = null;
+            endTime = null;
+            clearInterval(timerInterval);
             document.getElementById('timer-display').textContent = '00:00:00';
             document.getElementById('header-section').classList.remove('d-none');
             document.getElementById('score-container').classList.add('d-none');
