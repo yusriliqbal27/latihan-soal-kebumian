@@ -40,5 +40,19 @@
     "answerIndex": 0,
     "explanation": "",
     "image": null
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Jika suatu saat di arah timur dari tempat di Bumi belahan selatan, kita melihat Bulan seperti yang tampak pada gambar, maka saat itu …... dan Bulan dalam fase …...",
+    "options": [
+      "sore hari ; sabit awal",
+      "pagi hari ; sabit awal",
+      "sore hari ; sabit akhir",
+      "pagi hari ; sabit akhir",
+      "tidak bisa ditentukan ; tidak tahu"
+    ],
+    "answerIndex": 1,
+    "explanation": "",
+    "image": "Picture1.png"
   }
 ]
