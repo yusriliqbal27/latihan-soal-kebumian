@@ -1,27 +1,44 @@
 [
   {
     "type": "multiple_choice",
-    "prompt": "Apa yang merupakan lapisan bumi yang paling dalam?",
+    "prompt": "Jenis awan apa yang akan Saudara lihat dalam lingkungan atmosfer yang stabil?",
     "options": [
-      "Kulit bumi",
-      "Mantel",
-      "Inti luar",
-      "Inti dalam"
+      "Cu",
+      "Cn",
+      "St",
+      "Cs",
+      "Cb"
     ],
-    "answerIndex": 3,
-    "explanation": "Inti dalam adalah lapisan bumi yang paling dalam dan terdiri dari nikel dan besi padat.",
-    "image": "earth_layers.png"
+    "answerIndex": 2,
+    "explanation": "",
+    "image": null
   },
   {
-    "type": "true_false",
-    "prompt": "Gunung berapi terbentuk karena gerakan lempeng tektonik yang mengekalkan.",
-    "answer": false,
-    "explanation": "Gunung berapi terbentuk karena lempeng tektonik yang berkonvergen atau divergen, bukan karena mereka mengekalkan."
+    "type": "multiple_choice",
+    "prompt": "Apa nama gaya yang awalnya menggerakkan udara dan menyebabkan angin berhembus?",
+    "options": [
+      "Coriolis",
+      "Gradient tekanan",
+      "Gesekan",
+      "Gravitasi",
+      "Hidrostatik"
+    ],
+    "answerIndex": 1,
+    "explanation": "",
+    "image": null
   },
   {
-    "type": "short_answer",
-    "prompt": "Apa istilah untuk proses peleburan batuan karena panas dan tekanan dalam proses metamorphisme?",
-    "answer": "metamorfosis",
-    "explanation": "Metamorfosis adalah proses perubahan batuan existing karena panas, tekanan, dan zat kimia tanpa melelehnya."
+    "type": "multiple_choice",
+    "prompt": "Dampak dari fenomena El-Niño adalah...",
+    "options": [
+      "berkurangnya curah hujan dan berkurangnya temperatur air laut di Samudera Pasifik Bagian Barat",
+      "berkurangnya curah hujan dan berkurangnya temperatur air laut di Samudera Pasifik Bagian Timur",
+      "bertambahnya curah hujan dan bertambahnya temperatur air laut di Samudera Pasifik Bagian Barat",
+      "bertambahnya curah hujan dan berkurangnya temperatur air laut di Samudera Pasifik Bagian Timur",
+      "berkurangnya curah hujan dan bertambahnya temperatur air laut di Samudera Pasifik Bagian Barat"
+    ],
+    "answerIndex": 0,
+    "explanation": "",
+    "image": null
   }
 ]
